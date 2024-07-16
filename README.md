@@ -7,9 +7,9 @@ How to run the project
 3. Access the API via port 8080
     * Or you can use the integrated Swagger by accessing ```http://localhost:8080/swagger-ui.html``` via browser
 
-List of account that can be used are in ```account_list.json``` file
+List of accounts that can be used are in ```account_list.json``` file
 
-Conversion rate are set on ```model/Currency.java``` which based on USD
+Conversion rates are set on ```model/Currency.java``` which based on USD
 
 The conversion value:
 
@@ -41,7 +41,7 @@ Sample response
    "account": {
       "accountID": 1,      // Long type, value is the sender account ID
       "amount": 985000,    // Double type, value is the remaining balance
-      "currency": "IDR"    // One of this value: IDR, USD, MYR. Value are the sender account main currency
+      "currency": "IDR"    // One of this value: IDR, USD, MYR. Value is the sender account main currency
    },
    "status": "SUCCESS",    // Value is either SUCCESS or FAILED
    "message": "",          // String type, only filled if status is FAILED to explain the failure
