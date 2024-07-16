@@ -136,6 +136,7 @@ class MainServiceTest {
 
         SendResponse response = mainService.sendMoney(request);
         assert response.getStatus().equals(SendStatus.FAILED);
+        assert response.getMessage().equals("Amount not sufficient to do this transaction");
     }
 
     @Test
@@ -148,6 +149,7 @@ class MainServiceTest {
 
         SendResponse response = mainService.sendMoney(request);
         assert response.getStatus().equals(SendStatus.FAILED);
+        assert response.getMessage().equals("Sender account not exist");
     }
 
     @Test
@@ -160,6 +162,7 @@ class MainServiceTest {
 
         SendResponse response = mainService.sendMoney(request);
         assert response.getStatus().equals(SendStatus.FAILED);
+        assert response.getMessage().equals("Receiver account not exist");
     }
 
     private void validate(SendRequest request) throws Exception {
