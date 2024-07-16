@@ -41,7 +41,7 @@ Sample response
    "account": {
       "accountID": 1,      // Long type, value is the sender account ID
       "amount": 985000,    // Double type, value is the remaining balance
-      "currency": "IDR"    // One of this value: IDR, USD, MYR. Value are the account main currency
+      "currency": "IDR"    // One of this value: IDR, USD, MYR. Value are the sender account main currency
    },
    "status": "SUCCESS",    // Value is either SUCCESS or FAILED
    "message": "",          // String type, only filled if status is FAILED to explain the failure
