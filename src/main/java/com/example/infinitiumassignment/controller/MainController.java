@@ -6,7 +6,7 @@ import com.example.infinitiumassignment.service.MainService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController("/api")
 public class MainController {
 
     final MainService mainService;
@@ -15,7 +15,7 @@ public class MainController {
         this.mainService = service;
     }
 
-    @PostMapping("/validatePayment")
+    @PostMapping("/send")
     public SendResponse sendMoney(SendRequest request) throws Exception {
         return mainService.sendMoney(request);
     }

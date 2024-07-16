@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SendRequest {
-    Long accountID;
+
+    Long accountIDSender;
     Double amount;
     Currency currency;
+    Long accountIDReceiver;
 }

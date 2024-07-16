@@ -26,8 +26,8 @@ public class MainService {
         SendResponse response = new SendResponse();
         Map<Long, Account> accountMap = Utilities.getAccounts();
 
-        // get account data
-        Account senderAccount = accountMap.getOrDefault(request.getAccountID(), null);
+        Account senderAccount = accountMap.getOrDefault(request.getAccountIDSender(), null);
+        Account receiverAccount = accountMap.getOrDefault(request.getAccountIDReceiver(), null);
 
         if (senderAccount == null) {
             response.setAccount(null);
@@ -36,21 +36,36 @@ public class MainService {
             return response;
         }
 
-        Double currentBalance = senderAccount.getAmount();
-        // calculate converted amount with conversion
-        Double sendAmount = request.getCurrency().convert(request.getAmount(), senderAccount.getCurrency());
-
-        if (currentBalance < sendAmount) {
+        if (receiverAccount == null) {
             response.setAccount(senderAccount);
             response.setStatus(SendStatus.FAILED);
-            response.setMessage("Amount insufficient to do this transaction");
+            response.setMessage("Receiver account not exist");
+            return response;
+        }
+
+        Double currentBalance = senderAccount.getAmount();
+        Double sendAmountInSenderCurrency = request.getCurrency().convert(request.getAmount(), senderAccount.getCurrency());
+        Double sendAmountInReceiverCurrency = request.getCurrency().convert(request.getAmount(), receiverAccount.getCurrency());
+
+        if (currentBalance < sendAmountInSenderCurrency) {
+            response.setAccount(senderAccount);
+            response.setStatus(SendStatus.FAILED);
+            response.setMessage("Amount not sufficient to do this transaction");
             return response;
         } else {
             // set new data to sender account
-            senderAccount.setAmount(currentBalance - sendAmount);
+            senderAccount.setAmount(senderAccount.getAmount() - sendAmountInSenderCurrency);
+            // set new data to receiver account
+            receiverAccount.setAmount(receiverAccount.getAmount() + sendAmountInReceiverCurrency);
+
             response.setAccount(senderAccount);
             response.setStatus(SendStatus.SUCCESS);
         }
+
+        accountMap.replace(senderAccount.getAccountID(), senderAccount);
+        accountMap.replace(receiverAccount.getAccountID(), receiverAccount);
+
+        Utilities.saveData(accountMap);
 
         return response;
     }
