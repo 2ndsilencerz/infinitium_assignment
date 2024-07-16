@@ -19,7 +19,7 @@ The conversion value:
 Sample case
 
 ```
-Send from accountID 1 with amount 1 USD
+Send from accountID 1 with amount 1 USD to accountID 2
 accountID 1 have 1000000 balance and its main currency is IDR
 ```
 
@@ -27,9 +27,10 @@ accountID 1 have 1000000 balance and its main currency is IDR
 Sample request
 ```
 {
-   "accountID": 1,         // Long type
+   "accountIDSender": 1,   // Long type
    "amount": 1,            // Double type
    "currency": "USD",      // One of this value: IDR, USD, MYR. Any other value would failing the transaction. The value should be the receiver currency
+   "accountIDReceiver": 2  // Long type
 }
 ```
 
