@@ -15,6 +15,10 @@ public enum Currency {
     }
 
     public Double convert(Double amount, Currency to) {
+        if (this == to) {
+            return amount;
+        }
+
         if (to == USD) {
             return amount / this.conversionRate;
         } else {

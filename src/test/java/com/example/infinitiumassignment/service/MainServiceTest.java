@@ -23,161 +23,106 @@ class MainServiceTest {
     }
 
     @Test
-    public void testSendSuccessIDRToUSD() throws Exception {
-        System.out.println("IDR To USD");
+    public void testSendSuccessIDRtoUSD() throws Exception {
+        System.out.println("Send IDR to USD");
         SendRequest request = new SendRequest();
-        request.setAccountIDSender(1L);
-        request.setAmount(15000D);
-        request.setCurrency(Currency.IDR);
-        request.setAccountIDReceiver(2L);
-
-        SendResponse response = mainService.sendMoney(request);
-        assert response.getStatus().equals(SendStatus.SUCCESS);
-
-        validate(request);
-    }
-
-    @Test
-    public void testSendSuccessUSDToIDR() throws Exception {
-        System.out.println("USD to IDR");
-        SendRequest request = new SendRequest();
-        request.setAccountIDSender(2L);
+        request.setAccountID(1L);
         request.setAmount(1D);
         request.setCurrency(Currency.USD);
-        request.setAccountIDReceiver(1L);
 
         SendResponse response = mainService.sendMoney(request);
         assert response.getStatus().equals(SendStatus.SUCCESS);
-
-        validate(request);
+        assert response.getAccount().getAmount().equals(985000D);
     }
 
     @Test
-    public void testSendSuccessIDRToMYR() throws Exception {
-        System.out.println("IDR to MYR");
+    public void testSendSuccessUSDtoIDR() throws Exception {
+        System.out.println("Send USD to IDR");
         SendRequest request = new SendRequest();
-        request.setAccountIDSender(1L);
+        request.setAccountID(2L);
         request.setAmount(15000D);
         request.setCurrency(Currency.IDR);
-        request.setAccountIDReceiver(3L);
 
         SendResponse response = mainService.sendMoney(request);
         assert response.getStatus().equals(SendStatus.SUCCESS);
-
-        validate(request);
+        assert response.getAccount().getAmount().equals(1999D);
     }
 
     @Test
-    public void testSendSuccessMYRToIDR() throws Exception {
-        System.out.println("MYR to IDR");
+    public void testSendSuccessIDRtoMYR() throws Exception {
+        System.out.println("Send IDR to MYR");
         SendRequest request = new SendRequest();
-        request.setAccountIDSender(3L);
+        request.setAccountID(1L);
         request.setAmount(5D);
         request.setCurrency(Currency.MYR);
-        request.setAccountIDReceiver(1L);
 
         SendResponse response = mainService.sendMoney(request);
         assert response.getStatus().equals(SendStatus.SUCCESS);
-
-        validate(request);
+        assert response.getAccount().getAmount().equals(985000D);
     }
 
     @Test
-    public void testSendSuccessUSDToMYR() throws Exception {
-        System.out.println("USD to MYR");
+    public void testSendSuccessMYRtoIDR() throws Exception {
+        System.out.println("Send MYR to IDR");
         SendRequest request = new SendRequest();
-        request.setAccountIDSender(2L);
-        request.setAmount(1D);
-        request.setCurrency(Currency.USD);
-        request.setAccountIDReceiver(3L);
+        request.setAccountID(3L);
+        request.setAmount(15000D);
+        request.setCurrency(Currency.IDR);
 
         SendResponse response = mainService.sendMoney(request);
         assert response.getStatus().equals(SendStatus.SUCCESS);
+        assert response.getAccount().getAmount().equals(4995D);
+    }
 
-        validate(request);
+    @Test
+    public void testSendSuccessUSDtoMYR() throws Exception {
+        System.out.println("Send USD to MYR");
+        SendRequest request = new SendRequest();
+        request.setAccountID(2L);
+        request.setAmount(5D);
+        request.setCurrency(Currency.MYR);
+
+        SendResponse response = mainService.sendMoney(request);
+        assert response.getStatus().equals(SendStatus.SUCCESS);
+        assert response.getAccount().getAmount().equals(1999D);
     }
 
     @Test
     public void testSendSuccessMYRtoUSD() throws Exception {
-        System.out.println("MYR to USD");
+        System.out.println("Send MYR to USD");
         SendRequest request = new SendRequest();
-        request.setAccountIDSender(3L);
-        request.setAmount(5D);
-        request.setCurrency(Currency.MYR);
-        request.setAccountIDReceiver(2L);
+        request.setAccountID(3L);
+        request.setAmount(1D);
+        request.setCurrency(Currency.USD);
 
         SendResponse response = mainService.sendMoney(request);
         assert response.getStatus().equals(SendStatus.SUCCESS);
-
-        validate(request);
-    }
-
-//    @Test
-//    public void testSendFailWrongCurrency() throws Exception {
-//        SendRequest request = new SendRequest();
-//        request.setAccountIDSender(3L);
-//        request.setAmount(1F);
-//        request.setCurrency(Currency.valueOf("ASD"));
-//        request.setAccountIDReceiver(1L);
-//
-//        SendResponse response = mainService.sendMoney(request);
-//        assert response.getStatus().equals(SendStatus.FAILED);
-//
-////        validate(request);
-//    }
-
-    @Test
-    public void testSendFailAmountInsufficient() throws Exception {
-        SendRequest request = new SendRequest();
-        request.setAccountIDSender(1L);
-        request.setAmount(1000001D);
-        request.setCurrency(Currency.IDR);
-        request.setAccountIDReceiver(2L);
-
-        SendResponse response = mainService.sendMoney(request);
-        assert response.getStatus().equals(SendStatus.FAILED);
+        assert response.getAccount().getAmount().equals(4995D);
     }
 
     @Test
-    public void testSendFailSenderNotExist() throws Exception {
+    public void testSendFailAccountNotExist() throws Exception {
+        System.out.println("Failed account not exist");
         SendRequest request = new SendRequest();
-        request.setAccountIDSender(4L);
-        request.setAmount(1000001D);
-        request.setCurrency(Currency.IDR);
-        request.setAccountIDReceiver(2L);
+        request.setAccountID(4L);
+        request.setAmount(1D);
+        request.setCurrency(Currency.USD);
 
         SendResponse response = mainService.sendMoney(request);
         assert response.getStatus().equals(SendStatus.FAILED);
+        assert response.getMessage().equals("Sender account not exist");
     }
 
     @Test
-    public void testSendFailReceiverNotExist() throws Exception {
+    public void testSendFailInsufficientAmount() throws Exception {
+        System.out.println("Failed amount insufficient");
         SendRequest request = new SendRequest();
-        request.setAccountIDSender(1L);
+        request.setAccountID(1L);
         request.setAmount(1000001D);
         request.setCurrency(Currency.IDR);
-        request.setAccountIDReceiver(4L);
 
         SendResponse response = mainService.sendMoney(request);
         assert response.getStatus().equals(SendStatus.FAILED);
-    }
-
-    private void validate(SendRequest request) throws Exception {
-        Map<Long, Account> accountAfter = Utilities.getAccounts();
-        Account oldSenderAccount = accountBefore.get(request.getAccountIDSender());
-        System.out.println("old sender account: " + oldSenderAccount);
-        Account newSenderAccount = accountAfter.get(request.getAccountIDSender());
-        System.out.println("new sender account: " + newSenderAccount);
-        Account oldReceiverAccount = accountBefore.get(request.getAccountIDReceiver());
-        System.out.println("old receiver account: " + oldReceiverAccount);
-        Account newReceiverAccount = accountAfter.get(request.getAccountIDReceiver());
-        System.out.println("new receiver account: " + newReceiverAccount);
-
-        System.out.println();
-
-        assert newSenderAccount.getAmount() ==
-                oldSenderAccount.getAmount() - request.getCurrency().convert(request.getAmount(), oldSenderAccount.getCurrency());
-        assert newReceiverAccount.getAmount() ==
-                oldReceiverAccount.getAmount() + request.getCurrency().convert(request.getAmount(), oldReceiverAccount.getCurrency());
+        assert response.getMessage().equals("Amount insufficient to do this transaction");
     }
 }

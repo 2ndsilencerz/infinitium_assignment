@@ -26,8 +26,8 @@ public class MainService {
         SendResponse response = new SendResponse();
         Map<Long, Account> accountMap = Utilities.getAccounts();
 
-        Account senderAccount = accountMap.getOrDefault(request.getAccountIDSender(), null);
-        Account receiverAccount = accountMap.getOrDefault(request.getAccountIDReceiver(), null);
+        // get account data
+        Account senderAccount = accountMap.getOrDefault(request.getAccountID(), null);
 
         if (senderAccount == null) {
             response.setAccount(null);
@@ -36,37 +36,21 @@ public class MainService {
             return response;
         }
 
-        if (receiverAccount == null) {
-            response.setAccount(senderAccount);
-            response.setStatus(SendStatus.FAILED);
-            response.setMessage("Receiver account not exist");
-            return response;
-        }
-
         Double currentBalance = senderAccount.getAmount();
-        Double sendAmount = request.getAmount();
+        // calculate converted amount with conversion
+        Double sendAmount = request.getCurrency().convert(request.getAmount(), senderAccount.getCurrency());
 
         if (currentBalance < sendAmount) {
             response.setAccount(senderAccount);
             response.setStatus(SendStatus.FAILED);
-            response.setMessage("Amount not sufficient to do this transaction");
+            response.setMessage("Amount insufficient to do this transaction");
             return response;
         } else {
-            Double sendAmountConverted = request.getCurrency().convert(sendAmount, receiverAccount.getCurrency());
-
             // set new data to sender account
-            senderAccount.setAmount(senderAccount.getAmount() - sendAmount);
-            // set new data to receiver account
-            receiverAccount.setAmount(receiverAccount.getAmount() + sendAmountConverted);
-
+            senderAccount.setAmount(currentBalance - sendAmount);
             response.setAccount(senderAccount);
             response.setStatus(SendStatus.SUCCESS);
         }
-
-        accountMap.replace(senderAccount.getAccountID(), senderAccount);
-        accountMap.replace(receiverAccount.getAccountID(), receiverAccount);
-
-        Utilities.saveData(accountMap);
 
         return response;
     }
